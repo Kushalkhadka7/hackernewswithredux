@@ -29,7 +29,7 @@ export const reducer = (state = initialState, action) => {
         loading: false,
         success: true,
         error: false,
-        comments: action.payload,
+        comments: [...state.comments, action.payload],
         message: 'success'
       };
     case actionTypes.FETCH_COMMETNS_ERROR:

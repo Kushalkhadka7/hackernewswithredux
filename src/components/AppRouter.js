@@ -10,6 +10,7 @@ import Comments from './Comments';
 import NotFound from './NotFound';
 import ROUTES from '../constants/routes';
 import { IS_AUTHENTICATED } from '../constants/sessionStorage';
+import { connect } from 'react-redux';
 
 /**
  * @class AppRouter
@@ -23,11 +24,6 @@ class AppRouter extends React.Component {
    */
   constructor(props) {
     super(props);
-    this.state = {
-      errors: '',
-      success: '',
-      isAuthenticated: false
-    };
   }
 
   /**
@@ -37,24 +33,16 @@ class AppRouter extends React.Component {
    */
   static getDerivedStateFromProps(props, state) {
     return {
-      ...state,
+      ...props,
       isAuthenticated: sessionStorage.getItem(IS_AUTHENTICATED) === 'true'
     };
   }
 
   /**
-   * Handles logout function in app.
-   */
-  handleLogout = () => {
-    this.setState({ isAuthenticated: false });
-    sessionStorage.setItem('isAuthenticated', false);
-  };
-
-  /**
    * @returns {boolean} React Router.
    */
   render() {
-    const { isAuthenticated } = this.state;
+    const { isAuthenticated } = this.props.LoginSignup;
 
     return (
       <Router basename={'/hackernews'}>
@@ -99,4 +87,17 @@ class AppRouter extends React.Component {
   }
 }
 
-export default AppRouter;
+/**
+ * @param {Object} param
+ * @returns {Object}
+ */
+const mapStateToProps = ({ LoginSignup }) => {
+  return {
+    LoginSignup
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  null
+)(AppRouter);

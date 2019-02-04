@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 
 import ROUTES from '../constants/routes';
-import { AppContext } from './AppContext';
 import { LOGIN_ERRORS } from '../constants/message';
 
 /**
@@ -13,7 +12,6 @@ import { LOGIN_ERRORS } from '../constants/message';
  * @param {Object} event
  */
 class Login extends React.Component {
-  static contextType = AppContext;
   /**
    * @param {*} props
    */
@@ -47,7 +45,7 @@ class Login extends React.Component {
 
       event.target.name === 'signup'
         ? this.props.handleSignup(loginData)
-        : this.props.handleLogin(loginData);
+        : this.props.handleLogin(loginData) && this.props.history.push('/');
     } else {
       this.setState({ errors: LOGIN_ERRORS.EMPTY_INPUT_FIELDS });
     }
@@ -59,9 +57,8 @@ class Login extends React.Component {
    */
   render() {
     const stateErrors = this.state.errors;
-    const { isAuthenticated, errors } = this.context;
     const {
-      LoginSignup: { message }
+      LoginSignup: { message, isAuthenticated }
     } = this.props;
 
     return (
@@ -114,9 +111,7 @@ class Login extends React.Component {
                   />
                 </div>
               </form>
-              <div className="invalid errors">
-                {stateErrors || errors || message}
-              </div>
+              <div className="invalid errors">{stateErrors || message}</div>
             </div>
           </div>
         )}

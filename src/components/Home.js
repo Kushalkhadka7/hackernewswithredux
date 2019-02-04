@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 
 import ROUTES from '../constants/routes';
 import { connect } from 'react-redux';
@@ -24,7 +24,9 @@ class Home extends React.PureComponent {
    * Calls fetchNewsStories to fetch news data from api.
    */
   componentDidMount() {
-    this.props.fetchNewsIds(this.state.newsType);
+    const newsType = this.checkRoutes();
+
+    this.props.fetchNewsIds(newsType);
   }
 
   /**
@@ -53,32 +55,33 @@ class Home extends React.PureComponent {
    */
   render() {
     const stories = this.props.NewsStories.stories;
+    const isAuthenticated = this.props.LoginSignup.isAuthenticated;
 
     return (
-      <div>
-        {!this.props.NewsStories.loading ? (
-          stories.map(value => (
-            <Link
-              to={{
-                pathname: `news/${value.data.id}`,
-                state: {
-                  data: value.data
-                }
-              }}
-            >
-              <div
-                onClick={this.handleClick}
-                className="each-news"
-                key={value.data.id}
-              >
-                {value.data.title}
-              </div>
-            </Link>
-          ))
+      <React.Fragment>
+        {isAuthenticated ? (
+          <div>
+            {!this.props.NewsStories.loading ? (
+              stories.map(value => (
+                <Link
+                  to={{
+                    pathname: `news/${value.data.id}`,
+                    state: {
+                      data: value.data
+                    }
+                  }}
+                >
+                  <div className="each-news">{value.data.title}</div>
+                </Link>
+              ))
+            ) : (
+              <div>loading...</div>
+            )}
+          </div>
         ) : (
-          <div>loading...</div>
+          <Redirect to="/login" />
         )}
-      </div>
+      </React.Fragment>
     );
   }
 }
@@ -87,10 +90,11 @@ class Home extends React.PureComponent {
  * @param {*} state
  * @returns {Object}
  */
-const mapstateToProps = ({ NewsIds, NewsStories }) => {
+const mapstateToProps = ({ NewsIds, NewsStories, LoginSignup }) => {
   return {
     NewsIds,
-    NewsStories
+    NewsStories,
+    LoginSignup
   };
 };
 

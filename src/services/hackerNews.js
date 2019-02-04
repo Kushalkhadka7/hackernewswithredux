@@ -33,9 +33,9 @@ export function getNewsStories(ids, page) {
  * @returns {Object}
  */
 export function getComments(commentsIds) {
-  const comments = commentsIds.map(id => getCommentsFromId(id));
+  const comments = getCommentsFromId(commentsIds);
 
-  return Promise.all(comments);
+  return comments;
 }
 
 /**

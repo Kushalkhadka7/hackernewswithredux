@@ -1,5 +1,6 @@
 import React from 'react';
-import { connect } from 'react-redux';
+
+import CommentsChilds from './CommentsChilds';
 
 /**
  * @class Comments
@@ -7,63 +8,27 @@ import { connect } from 'react-redux';
  */
 class Comments extends React.Component {
   /**
-   * Api call here.
-   */
-  componentDidMount() {
-    const commentsIds = this.props.location.state.data.kids || this.props.data;
-
-    this.props.fetchComments(commentsIds);
-  }
-  /**
    * @returns {Object}
    */
   render() {
-    const { loading, comments } = this.props.Comments;
+    const kidsNewsId = this.props.data
+      ? this.props.data
+      : this.props.history.location.state.data.kids;
 
     return (
-      <div>
-        {!loading ? (
-          comments ? (
-            comments.map(value => (
-              <div>
-                <div className="each-news">{value.data.text}</div>
-              </div>
-            ))
+      <React.Fragment>
+        <div className="container local-container list-container">
+          {kidsNewsId ? (
+            <ul>
+              <CommentsChilds data={kidsNewsId} />
+            </ul>
           ) : (
-            <div>no comments to display</div>
-          )
-        ) : (
-          <div>loading...</div>
-        )}
-      </div>
+            <div>error</div>
+          )}
+        </div>
+      </React.Fragment>
     );
   }
 }
 
-/**
- * @param {Object} param
- * @returns {Object}
- */
-const mapStateToProps = ({ Comments }) => {
-  return {
-    Comments
-  };
-};
-/**
- * @param {*} dispatch
- * @returns {Object}
- */
-const mapDispatchToProps = dispatch => {
-  const FetchComments = require('../reducer/comments/actionCreators');
-
-  return {
-    fetchComments: commentId => {
-      dispatch(FetchComments.actions.fetchComments(commentId));
-    }
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Comments);
+export default Comments;
